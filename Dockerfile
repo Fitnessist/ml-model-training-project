@@ -1,5 +1,5 @@
-FROM gcr.io/deeplearning-platform-release/tf2-gpu.2-8
-# FROM asia-docker.pkg.dev/vertex-ai/training/tf-gpu.2-11.py310:latest
+# FROM gcr.io/deeplearning-platform-release/tf2-gpu.2-8
+FROM asia-docker.pkg.dev/vertex-ai/training/tf-gpu.2-11.py310:latest
 
 
 WORKDIR /
