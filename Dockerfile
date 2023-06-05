@@ -3,7 +3,7 @@ FROM gcr.io/deeplearning-platform-release/tf2-gpu.2-8
 
 WORKDIR /
 ARG bucket
-ENV bucket=${bucket}
+ENV bucket=${_BUCKET_NAME}
 
 # Copies the trainer code to the docker image.
 COPY trainer /trainer
