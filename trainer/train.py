@@ -2,6 +2,7 @@
 import numpy as np
 import pandas as pd
 from pathlib import Path
+import os
 import os.path
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -13,7 +14,8 @@ import splitfolders
 import matplotlib.pyplot as plt
 
 # split train validation
-splitfolders.ratio("/gcs/fitnessist-trained-model/dataset bangkit", output="food-data", seed=1337, ratio=(.8, .2), group_prefix=None) 
+bucket = os.environ['bucket']
+splitfolders.ratio(f"/gcs/{bucket}/dataset\ bangkit", output="food-data", seed=1337, ratio=(.8, .2), group_prefix=None) 
 
 training_dir = os.path.join('food-data/', 'train')
 testing_dir = os.path.join('food-data/', 'val')
@@ -106,5 +108,5 @@ plt.figure()
 plt.show()
 
 # save model
-model.save('/gcs/fitnessist-trained-model/foodModel1.h5')
+model.save(f"/gcs/{bucket}/foodModel1.h5")
 print('Model Saved!')
