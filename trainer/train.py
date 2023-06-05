@@ -13,7 +13,7 @@ import splitfolders
 import matplotlib.pyplot as plt
 
 # split train validation
-splitfolders.ratio("/gcs/bucket-training-model/dataset\ bangkit", output="food-data", seed=1337, ratio=(.8, .2), group_prefix=None) 
+splitfolders.ratio("/gcs/bucket-training-model/dataset bangkit", output="food-data", seed=1337, ratio=(.8, .2), group_prefix=None) 
 
 training_dir = os.path.join('food-data/', 'train')
 testing_dir = os.path.join('food-data/', 'val')
