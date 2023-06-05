@@ -5,6 +5,9 @@ WORKDIR /
 
 # Copies the trainer code to the docker image.
 COPY trainer /trainer
+COPY requirements.txt /
+
+RUN pip install -r requirements.txt
 
 # Sets up the entry point to invoke the trainer.
 ENTRYPOINT ["python", "-m", "trainer.train"]
