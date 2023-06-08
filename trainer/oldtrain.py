@@ -1,18 +1,22 @@
 # import modules and libraries
+import numpy as np
+import pandas as pd
+from pathlib import Path
 import os.path
 import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split
 import tensorflow as tf
-import splitfolders 
+from sklearn.metrics import confusion_matrix, classification_report
 from keras.preprocessing.image import ImageDataGenerator
-from keras import Model 
-from keras.layers import Dense, Dropout, Flatten, GlobalAveragePooling2D
-from keras.models import Model
+import splitfolders 
+import matplotlib.pyplot as plt
 
 # split train validation
-splitfolders.ratio("/gcs/bucket-training-model/dataset bangkit", output="/gcs/fitnessist-trained-model/food-data", seed=1337, ratio=(.8, .2), group_prefix=None) 
+splitfolders.ratio("/gcs/bucket-training-model/dataset bangkit", output="food-data", seed=1337, ratio=(.8, .2), group_prefix=None) 
 
-training_dir = os.path.join('/gcs/bucket-training-model/food-data/', 'train')
-testing_dir = os.path.join('/gcs/bucket-training-model/food-data/', 'val')
+training_dir = os.path.join('food-data/', 'train')
+testing_dir = os.path.join('food-data/', 'val')
 
 training_datagen = ImageDataGenerator(
       rescale = 1./255,
@@ -45,29 +49,31 @@ validation_generator = validation_datagen.flow_from_directory(
 )
 
 # build model
-InceptionV3_model = tf.keras.applications.InceptionV3(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
+pretrained_model = tf.keras.applications.MobileNetV2(
+    input_shape=(224, 224, 3),
+    include_top=False,
+    weights='imagenet',
+    pooling='avg'
+)
 
-# The last 15 layers fine tune
-for layer in InceptionV3_model.layers[:-15]:
-    layer.trainable = False
+pretrained_model.trainable = False
 
-x = InceptionV3_model.output
-x = GlobalAveragePooling2D()(x)
-x = Flatten()(x)
-x = Dense(units=512, activation='relu')(x)
-x = Dropout(0.3)(x)
-x = Dense(units=512, activation='relu')(x)
-x = Dropout(0.3)(x)
-output  = Dense(units=21, activation='softmax')(x)
-model = Model(InceptionV3_model.input, output)
+inputs = pretrained_model.input
+
+x = tf.keras.layers.Dense(128, activation='relu')(pretrained_model.output)
+x = tf.keras.layers.Dense(128, activation='relu')(x)
+
+outputs = tf.keras.layers.Dense(21, activation='softmax')(x)
+
+model = tf.keras.Model(inputs, outputs)
 
 print(model.summary())
 
 #callback
 class myCallback(tf.keras.callbacks.Callback):
   def on_epoch_end(self, epoch, logs={}):
-    if(logs.get('val_accuracy')>0.90):
-      print("\nReached 90% accuracy so cancelling training!")
+    if(logs.get('val_accuracy')>0.96):
+      print("\nReached 96% accuracy so cancelling training!")
       self.model.stop_training = True
 
 # compile
@@ -100,5 +106,5 @@ plt.figure()
 plt.show()
 
 # save model
-model.save('/gcs/bucket-training-model/foodModel1.h5')
+model.save("/gcs/bucket-training-model/foodModel1.h5")
 print('Model Saved!')
