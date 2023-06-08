@@ -11,10 +11,10 @@ from keras.models import Model
 bucket_name = "bucket-training-model"
 
 # split train validation
-splitfolders.ratio(f"/gcs/{bucket_name}/dataset bangkit", output="/gcs/{bucket_name}/food-data", seed=1337, ratio=(.8, .2), group_prefix=None) 
+splitfolders.ratio(f"/gcs/{bucket_name}/dataset bangkit", output= f"/gcs/{bucket_name}/food-data", seed=1337, ratio=(.8, .2), group_prefix=None) 
 
-training_dir = os.path.join('/gcs/{bucket_name}/food-data/', 'train')
-testing_dir = os.path.join('/gcs/{bucket_name}/food-data/', 'val')
+training_dir = os.path.join(f'/gcs/{bucket_name}/food-data/', 'train')
+testing_dir = os.path.join(f'/gcs/{bucket_name}/food-data/', 'val')
 
 training_datagen = ImageDataGenerator(
       rescale = 1./255,
@@ -102,5 +102,5 @@ plt.figure()
 plt.show()
 
 # save model
-model.save('/gcs/{bucket_name}/foodModel1.h5')
+model.save(f'/gcs/{bucket_name}/foodModel1.h5')
 print('Model Saved!')
