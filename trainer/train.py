@@ -8,11 +8,13 @@ from keras import Model
 from keras.layers import Dense, Dropout, Flatten, GlobalAveragePooling2D
 from keras.models import Model
 
-# split train validation
-splitfolders.ratio("/gcs/bucket-training-model/dataset bangkit", output="/gcs/fitnessist-trained-model/food-data", seed=1337, ratio=(.8, .2), group_prefix=None) 
+bucket_name = "bucket-training-model"
 
-training_dir = os.path.join('/gcs/bucket-training-model/food-data/', 'train')
-testing_dir = os.path.join('/gcs/bucket-training-model/food-data/', 'val')
+# split train validation
+splitfolders.ratio(f"/gcs/{bucket_name}/dataset bangkit", output="/gcs/{bucket_name}/food-data", seed=1337, ratio=(.8, .2), group_prefix=None) 
+
+training_dir = os.path.join('/gcs/{bucket_name}/food-data/', 'train')
+testing_dir = os.path.join('/gcs/{bucket_name}/food-data/', 'val')
 
 training_datagen = ImageDataGenerator(
       rescale = 1./255,
@@ -100,5 +102,5 @@ plt.figure()
 plt.show()
 
 # save model
-model.save('/gcs/bucket-training-model/foodModel1.h5')
+model.save('/gcs/{bucket_name}/foodModel1.h5')
 print('Model Saved!')
