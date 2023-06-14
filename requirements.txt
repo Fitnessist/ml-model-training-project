@@ -1,1 +1,2 @@
 split-folders==0.5.1
+google-cloud-storage
