@@ -9,7 +9,7 @@ from keras.layers import Dense, Dropout, Flatten, GlobalAveragePooling2D
 from keras.models import Model
 from google.cloud import storage
 
-credentials_path = 'credentials.json'
+credentials_path = 'gs://bucket-training-model/credentials.json'
 bucket_name = "bucket-training-model"
 
 # split train validation
