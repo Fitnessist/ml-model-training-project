@@ -99,8 +99,8 @@ plt.plot(epochs, val_acc, 'b', label='Validation accuracy')
 plt.title('Training and validation accuracy')
 plt.legend(loc=0)
 plt.figure()
-plt.show()
 plt.savefig(f'/gcs/{bucket_name}/GrafikModel1.png')
+plt.show()
 
 # save model
 model.save(f'/gcs/{bucket_name}/foodModel1.h5')
