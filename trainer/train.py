@@ -8,6 +8,7 @@ from keras import Model
 from keras.layers import Dense, Dropout, Flatten, GlobalAveragePooling2D
 from keras.models import Model
 
+credentials_path = '../credentials.json'
 bucket_name = "bucket-training-model"
 
 # split train validation
@@ -94,13 +95,26 @@ val_loss = history.history['val_loss']
 
 epochs = range(len(acc))
 
+plt.figure()  # Membuat figure baru
 plt.plot(epochs, acc, 'r', label='Training accuracy')
 plt.plot(epochs, val_acc, 'b', label='Validation accuracy')
 plt.title('Training and validation accuracy')
 plt.legend(loc=0)
-plt.figure()
-plt.savefig(f'/gcs/{bucket_name}/GrafikModel1.png')
-plt.show()
+# plt.savefig(f'/gcs/{bucket_name}/GrafikModel1.png')  # Simpan gambar sebelum memanggil plt.show()
+# plt.show()
+
+# Simpan gambar ke file lokal
+local_file_path = 'grafik.png'
+plt.savefig(local_file_path)
+
+# Unggah gambar ke bucket GCS
+client = storage.Client.from_service_account_json(credentials_path)
+bucket = client.get_bucket(bucket_name)
+blob = bucket.blob('GrafikModel1.png')
+blob.upload_from_filename(local_file_path)
+
+# Hapus file lokal setelah diunggah
+os.remove(local_file_path)
 
 # save model
 model.save(f'/gcs/{bucket_name}/foodModel1.h5')
