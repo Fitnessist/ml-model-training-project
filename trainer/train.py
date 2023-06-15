@@ -10,6 +10,8 @@ from keras.models import Model
 from google.cloud import storage
 from io import BytesIO
 
+bucket_name = "bucket-training-model"
+
 # Mengunduh file kredensial dari bucket GCS
 client = storage.Client()
 bucket = client.get_bucket(bucket_name)
@@ -17,7 +19,7 @@ blob = bucket.blob('credentials.json')
 blob.download_to_filename('credentials.json')
 
 credentials_path = "credentials.json"
-bucket_name = "bucket-training-model"
+
 
 # split train validation
 splitfolders.ratio(f"/gcs/{bucket_name}/dataset bangkit", output= f"/gcs/{bucket_name}/food-data", seed=1337, ratio=(.8, .2), group_prefix=None) 
