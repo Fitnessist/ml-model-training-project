@@ -10,6 +10,12 @@ from keras.models import Model
 from google.cloud import storage
 from io import BytesIO
 
+# Mengunduh file kredensial dari bucket GCS
+client = storage.Client()
+bucket = client.get_bucket(bucket_name)
+blob = bucket.blob('credentials.json')
+blob.download_to_filename('credentials.json')
+
 credentials_path = "credentials.json"
 bucket_name = "bucket-training-model"
 
