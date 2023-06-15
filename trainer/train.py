@@ -8,8 +8,9 @@ from keras import Model
 from keras.layers import Dense, Dropout, Flatten, GlobalAveragePooling2D
 from keras.models import Model
 from google.cloud import storage
+from io import BytesIO
 
-credentials_path = 'gs://bucket-training-model/credentials.json'
+credentials_path = "credentials.json"
 bucket_name = "bucket-training-model"
 
 # split train validation
@@ -104,18 +105,16 @@ plt.legend(loc=0)
 # plt.savefig(f'/gcs/{bucket_name}/GrafikModel1.png')  # Simpan gambar sebelum memanggil plt.show()
 # plt.show()
 
-# Simpan gambar ke file lokal
-local_file_path = 'grafik.png'
-plt.savefig(local_file_path)
+# Simpan gambar ke BytesIO buffer
+buffer = BytesIO()
+plt.savefig(buffer, format='png')
+buffer.seek(0)
 
 # Unggah gambar ke bucket GCS
 client = storage.Client.from_service_account_json(credentials_path)
 bucket = client.get_bucket(bucket_name)
 blob = bucket.blob('GrafikModel1.png')
-blob.upload_from_filename(local_file_path)
-
-# Hapus file lokal setelah diunggah
-os.remove(local_file_path)
+blob.upload_from_file(buffer, content_type='image/png')
 
 # save model
 model.save(f'/gcs/{bucket_name}/foodModel1.h5')
